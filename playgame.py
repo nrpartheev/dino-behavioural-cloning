@@ -14,12 +14,6 @@ width = 800
 height = 165   
 
 
-def up():
-    keyboard.release("right")
-    keyboard.release(keyboard.KEY_DOWN)
-    keyboard.press(keyboard.KEY_UP)
-
-
 if __name__ == '__main__':
     keyboard.add_hotkey("esc", exit)  
     model = model_from_json(open("model.json","r").read())
@@ -27,16 +21,13 @@ if __name__ == '__main__':
 
     while True:
         screenshot = ss_manager.grab(frame)
-        image = Image.frombytes("RGB", screenshot.size, screenshot.rgb)
-
-        grey_image = image.convert("L")                       
-        a_img = np.array(grey_image.resize((width, height)))  
-        img = a_img / 255                                     
-        X = np.array([img])                                 
-        X = X.reshape(X.shape[0], width, height, 1)         
+        image = Image.frombytes("RGB", screenshot.size, screenshot.rgb)                    
+        image = np.array(image.resize((width, height)))                                    
+        X = np.array([image])                                      
         prediction = model.predict(X)                       
         result = np.argmax(prediction) 
-        if result == 2: 
+        if result == 1: 
             time.sleep(0.1)
-            up()
+    	    keyboard.press(keyboard.KEY_UP)
+            keyboard.release(keyboard.KEY_UP)
         
